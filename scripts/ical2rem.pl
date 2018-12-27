@@ -58,6 +58,7 @@
  All options have reasonable defaults:
  --label		       Calendar name (Default: Calendar)
  --lead-time	       Advance days to start reminders (Default: 3)
+ --tdelta-lead-time	  Advance warning minutes for scheduled events (Default: 15)
  --todos, --no-todos   Process Todos? (Default: Yes)
  --heading			   Define a priority for static entries
  --help				   Usage
@@ -79,6 +80,12 @@ the "--label" option.
   ical2rem.pl --lead-time 3
  
 How may days in advance to start getting reminders about the events. Defaults to 3. 
+
+=head2 --tdelta-lead-time 
+
+  ical2rem.pl --tdelta-lead-time 3
+ 
+How many minutes in advance to start getting warning reminders. Defaults to 15. 
 
 =head2 --no-todos
 
@@ -107,6 +114,7 @@ $VERSION = "0.5.2";
 
 # Declare how many days in advance to remind
 my $DEFAULT_LEAD_TIME = 3;
+my $DEFAULT_TDELTA_LEAD_TIME = 15;
 my $PROCESS_TODOS     = 1;
 my $HEADING	      = "";
 my $help;
@@ -116,6 +124,7 @@ my $label = 'Calendar';
 GetOptions (
 	"label=s"     => \$label,
 	"lead-time=i" => \$DEFAULT_LEAD_TIME,
+	"tdelta-lead-time=i" => \$DEFAULT_TDELTA_LEAD_TIME,
 	"todos!"	  => \$PROCESS_TODOS,
 	"heading=s"	  => \$HEADING,
 	"help|?" 	  => \$help, 
@@ -264,6 +273,7 @@ foreach $yearkey (sort keys %{$events} ) {
                 if ($start->hour > 0) { 
                     print " AT ";
                     print $start->strftime("%H:%M");
+                    print " +".$DEFAULT_TDELTA_LEAD_TIME;
                     print " SCHED _sfun MSG %a %2 ";
                 } else {
                     print " MSG %a ";
